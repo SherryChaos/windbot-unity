@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace WindBot.Unity
 {
-    internal static class WindBotResources
+    public static class WindBotResources
     {
         private static readonly Dictionary<string, string> Map = new Dictionary<string, string>
         {
@@ -5636,6 +5636,8 @@ namespace WindBot.Unity
 }
 " },
         };
+
+        public static IEnumerable<KeyValuePair<string, string>> All { get { return Map; } }
 
         public static string Get(string directory, string filename, string extension)
         {
