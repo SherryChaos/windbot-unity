@@ -1,3 +1,4 @@
+#if !UNITY_5_3_OR_NEWER
 //
 // Mono.Data.Sqlite.SqliteDataSourceEnumerator.cs
 //
@@ -75,3 +76,4 @@ namespace Mono.Data.Sqlite
         }
 }
 
+#endif

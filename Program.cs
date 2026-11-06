@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Net;
+#if !UNITY_5_3_OR_NEWER
 using System.Web;
+#endif
 using System.Diagnostics;
 using WindBot.Game;
 using WindBot.Game.AI;
@@ -50,6 +52,7 @@ namespace WindBot
         {
             Rand = new Random();
             DecksManager.Init();
+#if !UNITY_5_3_OR_NEWER
             string absolutePath = Path.GetFullPath(databasePath);
             if (!File.Exists(absolutePath))
                 // In case windbot is placed in a folder under ygopro folder
@@ -66,6 +69,7 @@ namespace WindBot
                 System.Environment.Exit(1);
             }
             NamedCardsManager.Init(absolutePath);
+#endif
         }
 
         private static void RunFromArgs()
@@ -87,6 +91,7 @@ namespace WindBot
 
         private static void RunAsServer(int ServerPort)
         {
+#if !UNITY_5_3_OR_NEWER
             using (HttpListener MainServer = new HttpListener())
             {
                 MainServer.AuthenticationSchemes = AuthenticationSchemes.Anonymous;
@@ -164,6 +169,7 @@ namespace WindBot
                     }
                 }
             }
+#endif
         }
 
         private static void Run(object o)

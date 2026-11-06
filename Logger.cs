@@ -1,4 +1,8 @@
-﻿using System;
+using System;
+
+#if UNITY_5_3_OR_NEWER
+using UnityEngine;
+#endif
 
 namespace WindBot
 {
@@ -22,13 +26,19 @@ namespace WindBot
 
         public static void WriteLine(string message)
         {
+#if UNITY_5_3_OR_NEWER
+            Debug.Log("[" + DateTime.Now.ToString("yy-MM-dd HH:mm:ss") + "] " + message);
+#else
             lock (_syncRoot)
                 Console.WriteLine("[" + DateTime.Now.ToString("yy-MM-dd HH:mm:ss") + "] " + message);
+#endif
         }
 
         public static void DebugWriteLine(string message, bool printStackTrace = false)
         {
-#if DEBUG
+#if UNITY_5_3_OR_NEWER
+            Debug.Log("[" + DateTime.Now.ToString("yy-MM-dd HH:mm:ss") + "] " + message);
+#elif DEBUG
             lock (_syncRoot)
             {
                 Console.WriteLine("[" + DateTime.Now.ToString("yy-MM-dd HH:mm:ss") + "] " + message);
@@ -50,6 +60,17 @@ namespace WindBot
 
         private static void WriteErrorLine(string message, Exception exception, string callStack)
         {
+#if UNITY_5_3_OR_NEWER
+            string text = "[" + DateTime.Now.ToString("yy-MM-dd HH:mm:ss") + "] " + message;
+            string context = _contextProvider?.Invoke();
+            if (!string.IsNullOrEmpty(context))
+                text += "\nContext: " + context;
+            if (exception != null)
+                text += "\n" + exception;
+            else if (!string.IsNullOrEmpty(callStack))
+                text += "\nCall stack:\n" + callStack;
+            Debug.LogError(text);
+#else
             lock (_syncRoot)
             {
                 Console.BackgroundColor = ConsoleColor.Red;
@@ -68,6 +89,7 @@ namespace WindBot
                     Console.Error.WriteLine(callStack);
                 }
             }
+#endif
         }
     }
 }

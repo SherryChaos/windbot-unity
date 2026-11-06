@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -65,7 +65,7 @@ namespace WindBot.Game.AI
             _game = game;
             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(DialogsData));
             string dialogfilename = game.Dialog;
-            using (FileStream fs = Program.ReadFile("Dialogs", dialogfilename, "json"))
+            using (Stream fs = WindBotIO.ReadFile("Dialogs", dialogfilename, "json"))
             {
                 DialogsData data = (DialogsData)serializer.ReadObject(fs);
                 _welcome = data.welcome;

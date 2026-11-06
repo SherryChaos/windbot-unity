@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using YGOSharp.OCGWrapper;
@@ -43,7 +43,7 @@ namespace WindBot.Game
             StreamReader reader = null;
             try
             {
-                reader = new StreamReader(Program.ReadFile("Decks", name, "ydk"));
+                reader = new StreamReader(WindBotIO.ReadFile("Decks", name, "ydk"));
 
                 Deck deck = new Deck();
                 bool side = false;

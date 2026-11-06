@@ -1,5 +1,7 @@
-﻿using System;
+using System;
+#if !UNITY_5_3_OR_NEWER
 using System.Data;
+#endif
 
 namespace YGOSharp.OCGWrapper
 {
@@ -8,11 +10,21 @@ namespace YGOSharp.OCGWrapper
         public string Name { get; private set; }
         public string Description { get; private set; }
 
+#if UNITY_5_3_OR_NEWER
+        internal NamedCard(CardRow row) : base(row)
+        {
+            Name = row.Name;
+            Description = row.Description;
+        }
+#endif
+
+#if !UNITY_5_3_OR_NEWER
         internal NamedCard(IDataRecord reader) : base(reader)
         {
             Name = reader.GetString(10);
             Description = reader.GetString(11);
         }
+#endif
 
         public static new NamedCard Get(int id)
         {

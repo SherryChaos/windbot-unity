@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+#if !UNITY_5_3_OR_NEWER
+using System.Collections.Generic;
 using System.Data;
 using Mono.Data.Sqlite;
 
@@ -43,3 +44,4 @@ namespace YGOSharp.OCGWrapper
         }
     }
 }
+#endif

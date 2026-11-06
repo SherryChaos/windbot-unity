@@ -1,4 +1,5 @@
-﻿/********************************************************
+#if !UNITY_5_3_OR_NEWER
+/********************************************************
  * ADO.NET 2.0 Data Provider for SQLite Version 3.X
  * Written by Robert Simpson (robert@blackcastlesoft.com)
  * 
@@ -60,3 +61,4 @@ namespace Mono.Data.Sqlite
     }
   }
 }
+#endif

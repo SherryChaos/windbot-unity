@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+#if !UNITY_5_3_OR_NEWER
 using System.Data;
 using Mono.Data.Sqlite;
+#endif
+using System.Collections.Generic;
 using System;
 using System.IO;
 using System.Linq;
@@ -11,6 +13,18 @@ namespace YGOSharp.OCGWrapper
     {
         private static IDictionary<int, NamedCard> _cards;
 
+#if UNITY_5_3_OR_NEWER
+        /// <summary>Unity: the host feeds the card table (no sqlite on device).</summary>
+        public static void Init(ICardDataProvider provider)
+        {
+            _cards = new Dictionary<int, NamedCard>();
+            foreach (CardRow row in provider.GetAll())
+            {
+                if (!_cards.ContainsKey(row.Id))
+                    _cards.Add(row.Id, new NamedCard(row));
+            }
+        }
+#else
         public static void Init(string databaseFullPath)
         {
             try
@@ -46,6 +60,7 @@ namespace YGOSharp.OCGWrapper
                 throw new Exception("Could not initialize the cards database. Check the inner exception for more details.", ex);
             }
         }
+#endif
 
         internal static NamedCard GetCard(int id)
         {
@@ -59,10 +74,12 @@ namespace YGOSharp.OCGWrapper
             return _cards.Values.ToList();
         }
 
+#if !UNITY_5_3_OR_NEWER
         private static void LoadCard(IDataRecord reader)
         {
             NamedCard card = new NamedCard(reader);
             _cards.Add(card.Id, card);
         }
+#endif
     }
 }

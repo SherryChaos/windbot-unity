@@ -1,3 +1,4 @@
+#if !UNITY_5_3_OR_NEWER
 //
 // MonoPInvokeCallbackAttribute.cs: necessary for AOT ports of Mono
 //
@@ -34,3 +35,4 @@ namespace Mono.Util
 		public MonoPInvokeCallbackAttribute (Type t) {}
 	}
 }
+#endif

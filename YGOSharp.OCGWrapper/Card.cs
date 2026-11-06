@@ -1,5 +1,7 @@
-﻿using YGOSharp.OCGWrapper.Enums;
+using YGOSharp.OCGWrapper.Enums;
+#if !UNITY_5_3_OR_NEWER
 using System.Data;
+#endif
 
 namespace YGOSharp.OCGWrapper
 {
@@ -41,7 +43,11 @@ namespace YGOSharp.OCGWrapper
 
         public static Card Get(int id)
         {
+#if UNITY_5_3_OR_NEWER
+            return NamedCard.Get(id);
+#else
             return CardsManager.GetCard(id);
+#endif
         }
 
         public bool HasType(CardType type)
@@ -68,6 +74,50 @@ namespace YGOSharp.OCGWrapper
             return (HasType(CardType.Fusion) || HasType(CardType.Synchro) || HasType(CardType.Xyz) || HasType(CardType.Link));
         }
 
+#if UNITY_5_3_OR_NEWER
+        internal Card(CardRow row)
+        {
+            Id = row.Id;
+            Ot = row.Ot;
+            Alias = row.Alias;
+            Setcode = row.Setcode;
+            Type = row.Type;
+
+            int levelInfo = row.LevelInfo;
+            Level = levelInfo & 0xff;
+            LScale = (levelInfo >> 24) & 0xff;
+            RScale = (levelInfo >> 16) & 0xff;
+
+            Race = row.Race;
+            Attribute = row.Attribute;
+            Attack = row.Attack;
+            Defense = row.Defense;
+
+            if (HasType(CardType.Link))
+            {
+                LinkMarker = Defense;
+                Defense = 0;
+            }
+
+            Data = new CardData()
+            {
+                Code = Id,
+                Alias = Alias,
+                Setcode = Setcode,
+                Type = Type,
+                Level = Level,
+                Attribute = Attribute,
+                Race = Race,
+                Attack = Attack,
+                Defense = Defense,
+                LScale = LScale,
+                RScale = RScale,
+                LinkMarker = LinkMarker
+            };
+        }
+#endif
+
+#if !UNITY_5_3_OR_NEWER
         internal Card(IDataRecord reader)
         {
             Id = reader.GetInt32(0);
@@ -108,5 +158,6 @@ namespace YGOSharp.OCGWrapper
                 LinkMarker = LinkMarker
             };
         }
+#endif
     }
 }

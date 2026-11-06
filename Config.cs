@@ -1,6 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+#if !UNITY_5_3_OR_NEWER
 using System.Configuration;
+#endif
 using System.IO;
 
 namespace WindBot
@@ -33,12 +35,14 @@ namespace WindBot
                 }
             }
 
+#if !UNITY_5_3_OR_NEWER
             foreach (string key in ConfigurationManager.AppSettings)
             {
                 string normalizedKey = key.ToUpper();
                 if (!_fields.ContainsKey(normalizedKey))
                     _fields.Add(normalizedKey, ConfigurationManager.AppSettings[key]);
             }
+#endif
         }
 
         private static Dictionary<string, string> LoadArgs(string[] args)
