@@ -160,3 +160,6 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+
+# Unity .meta files are required for UPM git packages (immutable cache)
+!*.meta
