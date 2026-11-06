@@ -1,0 +1,9 @@
+{
+  "name": "com.sherry.windbot",
+  "version": "0.1.0",
+  "displayName": "WindBot (Unity)",
+  "description": "YGOPro duel AI (WindBot) embedded as a Unity package. Runs in-process on all player platforms: Windows/macOS/Android/iOS (IL2CPP).",
+  "unity": "6000.0",
+  "documentationUrl": "https://github.com/SherryChaos/windbot-unity",
+  "dependencies": {}
+}

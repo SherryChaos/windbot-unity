@@ -1,0 +1,4 @@
+<linker>
+  <!-- IL2CPP: WindBot picks executors/decks by reflection-ish lookup; keep all of it. -->
+  <assembly fullname="WindBot" preserve="all" />
+</linker>
