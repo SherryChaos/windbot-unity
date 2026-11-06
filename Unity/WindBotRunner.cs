@@ -41,6 +41,7 @@ namespace WindBot.Unity
             if (IsRunning)
                 throw new InvalidOperationException("WindBot is already running.");
 
+            Program.Rand = new Random();
             NamedCardsManager.Init(cards);
             DecksManager.Init();
 
