@@ -53,3 +53,15 @@ Unity 会为 Editor/Win/macOS/Android/iOS 自动编同一份；更新 = 改 pin 
 - 注意：**WindBot 的 `Decks/*.ydk` 必须与宿主喂给 server 的卡表一致**；不一致时 server 回 `ERRMSG_DECKERROR`，
   WindBot 的 `GameAI.OnDeckError` 会静默 `Connection.Close()`（无日志）——这就是之前「MSG_START 后掉线」的根因。
   内嵌方案里 server 与 bot 共用宿主的卡表，天然消除该问题；独立进程调试时要给 server 准备匹配的 `cards.cdb`。
+
+## 上游同步（本仓库没有 GitHub “Sync fork” 按钮）
+
+本仓库是**独立仓库**（不是 GitHub 上的 fork），所以 GitHub 不会显示 “Sync fork”。
+更新靠下面两条路径：
+
+- **本地**：powershell -File Tools/sync_upstream.ps1（可加 -Push）
+  → git fetch upstream → merge upstream/master → 重新生成 WindBotResources.g.cs 与 .meta → 提交。
+  有冲突时脚本会停下；解决后重跑 -SkipGenerate 或手动生成。
+- **CI**：.github/workflows/upstream-sync.yml（每周一 03:00 UTC + 手动 dispatch）
+  在 sync/upstream-<run_id> 分支上 merge + 重新生成，然后向 upm 开 PR。
+  有冲突时 job 失败并提示本地解决（不会静默覆盖 upm）。

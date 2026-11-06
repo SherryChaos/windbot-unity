@@ -3,8 +3,12 @@
 
 UPM git packages are immutable: Unity does not generate .meta files for them,
 so every asset must ship its own .meta or it is ignored (scripts included).
+
+Usage:
+  python Tools/gen_meta.py            # create missing metas
+  python Tools/gen_meta.py --prune    # also delete orphan metas (target deleted upstream)
 """
-import io, os, uuid
+import io, os, sys, uuid
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SKIP_DIRS = {'.git', 'bin', 'obj', 'Library', 'Temp', '.vs', 'Logs', 'UserSettings'}
@@ -73,20 +77,29 @@ def template_for(path, is_dir):
     return DEFAULT
 
 
+def prune_orphans():
+    """Remove .meta files whose target no longer exists (after upstream deletions)."""
+    removed = 0
+    for dirpath, dirnames, filenames in os.walk(ROOT):
+        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS and not d.startswith('.')]
+        for name in filenames:
+            if not name.endswith('.meta'):
+                continue
+            meta = os.path.join(dirpath, name)
+            if not os.path.exists(meta[:-5]):
+                os.remove(meta)
+                removed += 1
+    print('pruned', removed, 'orphan meta files')
+
+
 def main():
     created = 0
     for dirpath, dirnames, filenames in os.walk(ROOT):
         dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS and not d.startswith('.')]
         rel = os.path.relpath(dirpath, ROOT)
-        if rel == '.':
-            rel_dir = ''
-        else:
-            rel_dir = rel.replace('\\', '/')
+        rel_dir = '' if rel == '.' else rel.replace('\\', '/')
 
-        # folder meta (skip repo root itself)
         if rel_dir:
-            meta = os.path.join(dirpath, os.path.basename(dirpath) + '.meta')
-            # Unity puts the meta next to the folder, i.e. parent/<folder>.meta
             meta = os.path.join(os.path.dirname(dirpath), os.path.basename(dirpath) + '.meta')
             if not os.path.exists(meta):
                 with io.open(meta, 'w', encoding='utf-8', newline='\n') as f:
@@ -108,4 +121,6 @@ def main():
 
 
 if __name__ == '__main__':
+    if '--prune' in sys.argv:
+        prune_orphans()
     main()
