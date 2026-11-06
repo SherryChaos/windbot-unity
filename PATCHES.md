@@ -1,4 +1,8 @@
-# windbot-unity — Unity 适配分支（`unity`）
+# windbot-unity — Unity 适配分支（`upm`）
+
+> 分支名用 `upm` 而不是 `unity`：`Unity/` 目录与分支名 `unity` 在 Windows（大小写不敏感）上
+> 会让 `git rev-parse unity` / `git checkout unity` 报 “both revision and filename”。
+> 目录名保持 `Unity/`（Unity 约定），分支名用 `upm`。
 
 本分支 = [WindBot](https://github.com/SherryChaos/windbot) 上游 + **最小 Unity 适配**。
 原则：**上游文件尽量不改**，能加 `#if UNITY_5_3_OR_NEWER` 就不重写；新增代码全部放 `Unity/`。
@@ -13,6 +17,15 @@ Unity 工程 `Packages/manifest.json`：
 ```
 
 Unity 会为 Editor/Win/macOS/Android/iOS 自动编同一份；更新 = 改 pin 的 commit。
+
+## 进度（2026-11-06）
+
+- [x] 1/2/3/4/6/7 已完成（`#if` 守卫 + `WindBotIO` + `ICardDataProvider` + `Unity/WindBotRunner` + `Unity/WindBotResources.g.cs`）
+- [x] 桌面版 `WindBot.csproj` 仍可编（0 error）
+- [x] Unity 口径编译检查通过（`netstandard2.1` + `UNITY_5_3_OR_NEWER` + `UnityEngine` 桩，0 warning/0 error）
+- [ ] Unity Editor 内实际导入编译 + 实机跑一局（需要 Editor 打开）
+- [ ] 5 暂不改：`DecksManager` 保留 `Assembly.GetTypes()`，靠 `link.xml preserve="all"`；若 Android IL2CPP 实机被裁再生成 `ExecutorRegistry.g.cs`
+- [ ] 宿主 `OcgCardDatabase` → `ICardDataProvider` 适配器（需先给 `OcgCardDatabase` 加枚举接口）
 
 ## 必须改的 seam（P1 执行）
 
