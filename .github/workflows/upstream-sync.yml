@@ -14,24 +14,23 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
+      # Keep the checked-out branch == PR base (upm). Do NOT pre-create the PR branch:
+      # create-pull-request creates/pushes it itself; pre-creating it makes the action
+      # try to reset a non-existent origin/<branch> and fail with exit 128.
       - name: Checkout upm
         uses: actions/checkout@v4
         with:
           ref: upm
           fetch-depth: 0
 
-      - name: Fetch upstream
+      - name: Merge upstream into upm (working tree)
         run: |
-          git remote add upstream https://github.com/IceYGO/windbot.git
+          git remote add upstream https://github.com/IceYGO/windbot.git || true
           git fetch upstream master
-
-      - name: Merge upstream into a sync branch
-        run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b "sync/upstream-${GITHUB_RUN_ID}"
           if ! git merge upstream/master --no-edit; then
-            echo "::error::merge conflict: resolve locally, push upm, then rerun"
+            echo "::error::merge conflict: resolve locally on upm, push, then rerun"
             git merge --abort
             exit 1
           fi
@@ -48,6 +47,7 @@ jobs:
         with:
           branch: "sync/upstream-${{ github.run_id }}"
           base: upm
+          delete-branch: true
           title: "sync upstream WindBot"
           body: |
             自动同步 `IceYGO/windbot` master，并重新生成：
