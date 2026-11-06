@@ -45,13 +45,16 @@ namespace WindBot.Unity
             NamedCardsManager.Init(cards);
             DecksManager.Init();
 
-            WindBotIO.Provider = (directory, filename, extension) =>
+            if (WindBotIO.Provider == null)
             {
-                string text = WindBotResources.Get(directory, filename, extension);
-                if (text == null)
-                    return null;
-                return new MemoryStream(Encoding.UTF8.GetBytes(text));
-            };
+                WindBotIO.Provider = (directory, filename, extension) =>
+                {
+                    string text = WindBotResources.Get(directory, filename, extension);
+                    if (text == null)
+                        return null;
+                    return new MemoryStream(Encoding.UTF8.GetBytes(text));
+                };
+            }
 
             _stop = false;
             _client = new GameClient(info);
